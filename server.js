@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { PORT = 3003, DATABASE_URL } = process.env;
+const { PORT = 3333, DATABASE_URL } = process.env;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -24,18 +24,20 @@ mongoose.connection
 //////////////////////////
 // Models
 //////////////////////////
-const PeopleSchema = new mongoose.Schema({
-  name: {
+const BlogSchema = new mongoose.Schema({
+  title: {
     type: String,
     required: true
   },
-  isMan: {
-    type: Boolean,
+  body: {
+    type: String,
     required: true
-  }
-});
+  },
+  headline: String,
+  picture: String
+},{ timestamps: true });
 
-const People = mongoose.model("People", PeopleSchema);
+const Blog = mongoose.model("Blog", BlogSchema);
 
 
 ///////////////////////////////
@@ -55,28 +57,28 @@ app.get("/", (req, res) => {
 });
 
 // index route
-app.get("/people", async (req, res) => {
+app.get("/blogs", async (req, res) => {
   try {
-    res.json(await People.find({}));
+    res.json(await Blog.find({}));
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
 // create route
-app.post("/people", async (req, res) => {
+app.post("/blogs", async (req, res) => {
   try {
-    res.json(await People.create(req.body));
+    res.json(await Blog.create(req.body));
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
 // update route
-app.put("/people/:id", async (req, res) => {
+app.put("/blogs/:id", async (req, res) => {
   try {
     res.json(
-      await People.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true })
     );
   } catch (error) {
     res.status(400).json(error);
@@ -84,13 +86,22 @@ app.put("/people/:id", async (req, res) => {
 });
 
 // destroy
-app.delete("/people/:id", async (req, res) => {
+app.delete("/blogs/:id", async (req, res) => {
   try {
-    res.json(await People.findByIdAndRemove(req.params.id));
+    res.json(await Blog.findByIdAndRemove(req.params.id));
   } catch (error) {
     res.status(400).json(error);
   }
 });
+
+// show
+app.get("/blogs/:id", async (req, res) => {
+  try {
+    res.json(await Blog.findById(req.params.id));
+  } catch (error) {
+    res.status(400).json(error);
+  }
+})
 
 
 
