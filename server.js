@@ -25,8 +25,14 @@ mongoose.connection
 // Models
 //////////////////////////
 const PeopleSchema = new mongoose.Schema({
-  name: String,
-  isMan: Boolean
+  name: {
+    type: String,
+    required: true
+  },
+  isMan: {
+    type: Boolean,
+    required: true
+  }
 });
 
 const People = mongoose.model("People", PeopleSchema);
